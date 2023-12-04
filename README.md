@@ -1,7 +1,6 @@
 
 # TODO
-  + [X] TODO - currently pytroch impplementation is depricated as it makes use of np.>data_type> which was removed in numpy==1.4. I must update the definition in garray.
-
+  + [] TODO
 
 # GrouPy
 
