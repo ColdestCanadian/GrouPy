@@ -1,7 +1,11 @@
 
+# TODO
+  + [X] TODO - currently pytroch impplementation is depricated as it makes use of np.>data_type> which was removed in numpy==1.4. I must update the definition in garray.
+
+
 # GrouPy
 
-GrouPy is a python library that implements group equivariant convolutional neural networks [\[Cohen & Welling, 2016\]](#gcnn) in Chainer and TensorFlow, and supports other numerical computations involving transformation groups.
+GrouPy is a python library that implements group equivariant convolutional neural networks [\[Cohen & Welling, 2016\]](#gcnn) in Chainer and TensorFlow and Pytroch, and supports other numerical computations involving transformation groups.
 
 GrouPy consists of the following modules:
 
@@ -106,7 +110,6 @@ x = Variable(torch.randn(10, 3, 9, 9))
 y = C2(C1(x))
 print y.data.shape  # (10, 64, 4, 9, 9)
 ```
-
 
 
 ## Functionality

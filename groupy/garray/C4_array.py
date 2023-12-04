@@ -15,7 +15,7 @@ class C4Array(MatrixGArray):
 
     def __init__(self, data, p='int'):
         data = np.asarray(data)
-        assert data.dtype == np.int
+        assert data.dtype == int
 
         self._left_actions[C4Array] = self.__class__.left_action_mat
         self._left_actions[P4Array] = self.__class__.left_action_hmat
@@ -25,7 +25,7 @@ class C4Array(MatrixGArray):
 
     def int2mat(self, int_data):
         r = int_data[..., 0]
-        out = np.zeros(int_data.shape[:-1] + (2, 2), dtype=np.int)
+        out = np.zeros(int_data.shape[:-1] + (2, 2), dtype=int)
         out[..., 0, 0] = np.cos(0.5 * np.pi * r)
         out[..., 0, 1] = -np.sin(0.5 * np.pi * r)
         out[..., 1, 0] = np.sin(0.5 * np.pi * r)
@@ -35,8 +35,8 @@ class C4Array(MatrixGArray):
     def mat2int(self, mat_data):
         s = mat_data[..., 1, 0]
         c = mat_data[..., 1, 1]
-        r = ((np.arctan2(s, c) / np.pi * 2) % 4).astype(np.int)
-        out = np.zeros(mat_data.shape[:-2] + (1,), dtype=np.int)
+        r = ((np.arctan2(s, c) / np.pi * 2) % 4).astype(int)
+        out = np.zeros(mat_data.shape[:-2] + (1,), dtype=int)
         out[..., 0] = r
         return out
 
@@ -63,11 +63,11 @@ e = C4Array(data=np.array([0]), p='int')
 
 
 def identity(shape=(), p='int'):
-    e = C4Array(np.zeros(shape + (1,), dtype=np.int), 'int')
+    e = C4Array(np.zeros(shape + (1,), dtype=int), 'int')
     return e.reparameterize(p)
 
 
 def rand(size=()):
-    data = np.zeros(size + (1,), dtype=np.int64)
+    data = np.zeros(size + (1,), dtype=int)
     data[..., 0] = np.random.randint(0, 4, size)
     return C4Array(data=data, p='int')
