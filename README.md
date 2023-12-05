@@ -1,10 +1,13 @@
 
 # TODO
-  + [] TODO
+  + [] TODO - Update pytorch implementation to use notion consitent with the tensorflow implementation, and allow for dynamic selection of layers as supplied by [keras-gcnn](https://github.com/basveeling/keras-gcnn/blob/master/keras_gcnn/layers/convolutional.py) 
 
 # GrouPy
 
-GrouPy is a python library that implements group equivariant convolutional neural networks [\[Cohen & Welling, 2016\]](#gcnn) in Chainer and TensorFlow and Pytroch, and supports other numerical computations involving transformation groups.
+GrouPy is a python library that implements group equivariant convolutional neural networks [\[Cohen & Welling, 2016\]](#gcnn) in Chainer and TensorFlow and Pytorch, and supports other numerical computations involving transformation groups.
+
+This repository was forked from [adambielski](https://github.com/adambielski/GrouPy) who first ported [GrouPy](https://github.com/tscohen/GrouPy) to pytorch.
+
 
 GrouPy consists of the following modules:
 
@@ -14,19 +17,18 @@ GrouPy consists of the following modules:
 
 The modules garray and gfunc are used in a quick precomputation stage and run on CPU, while gconv is used to train and test the neural network, and runs on GPU.
 
-We have mostly worked with the Chainer implementation (see [experiments](https://github.com/tscohen/gconv_experiments)) but a unit-tested tensorflow implementation is available, and the code is written so that porting to theano, torch, or other frameworks is relatively easy. Most of the complexity of the code is in a precomputation step that generates indices used for transforming the filters, and this step can be shared by every deep learning framework. The rest is a basic indexing operation.
-
+We have mostly worked with the Chainer implementation (see [experiments](https://github.com/tscohen/gconv_experiments)) but a unit-tested tensorflow implementation is available along with test implementation for Pytorch, and the code is written so that porting to theano, or other frameworks is relatively easy. Most of the complexity of the code is in a precomputation step that generates indices used for transforming the filters, and this step can be shared by every deep learning framework. The rest is a basic indexing operation.
 
 ## Setup
 
-Install scientific python stack + nosetests
+Install scientific python stack and nosetests
 ```
 $ pip install numpy scipy matplotlib nose
 ```
 
 Install [chainer](http://chainer.org/) with CUDNN and HDF5, install [tensorflow](https://www.tensorflow.org/) or install [PyTorch](http://pytorch.org/).
 
-Clone the latest GrouPy from github and run setup.py
+Clone the latest GrouPy from github and run setup.py. Note, setup.py is now deprecated for setuptools > 52.8.0.
 
 ```
 $ python setup.py install
@@ -38,7 +40,9 @@ To run the tests, navigate to the groupy directory and run
 $ nosetests -v
 ```
 
-## Getting Started
+## Examples
+
+Bellow are some simple examples using GrouPy convolutions with the various supported frameworks.
 
 ### TensorFlow
 
@@ -147,7 +151,7 @@ The gfunc.plot module contains code for plotting the [Cayley](https://en.wikiped
 
 ### Convolution
 
-The gconv module contains group convolution layers for use in neural networks. The TensorFlow implementation is in gconv.tensorflow_gconv.splitgconv2d.py and the Chainer implementation is in gconv.chainer_gconv.p4m_conv.py and similar files.
+The gconv module contains group convolution layers for use in neural networks. The TensorFlow implementation is in groupy/gconv/tensorflow_gconv, the Chainer implementation is in groupy/gconv/chainer_gconv, and the Pytorch implementation is in groupy/gconv/pyrotch_gconv.
 
 
 ## Implementation notes
