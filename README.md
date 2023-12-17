@@ -1,6 +1,9 @@
 
 # TODO
-  + [] TODO - Update pytorch implementation to use notion consitent with the tensorflow implementation, and allow for dynamic selection of layers as supplied by [keras-gcnn](https://github.com/basveeling/keras-gcnn/blob/master/keras_gcnn/layers/convolutional.py) 
+
+  + [] TODO - Correct pytorch convolution output channel dimentions to be [batch_size, out_channels*image_channels, height, width] rahter than [batch_size, out_channels, image_channels, height, width].
+    + This is done but selecting the output shape is not yet supported. Should take a parmeter to select either BCCHW or BCHW.
+  + [] TODO - Add support for fp16 computation. As many variables have set precision (using np.int64) the code will need to be modified to allow the use of mixed precision computation as used in most generative models currently.
 
 # GrouPy
 
@@ -73,7 +76,7 @@ sess.run(init)
 y = sess.run(y, feed_dict={x: np.random.randn(10, 9, 9, 3)})
 sess.close()
 
-print y.shape  # (10, 9, 9, 512) 
+print(y.shape)  # (10, 9, 9, 512) 
 ```
 
 ### Chainer
@@ -92,26 +95,26 @@ x = Variable(cp.random.randn(10, 3, 9, 9).astype('float32'))
 
 # fprop
 y = C2(C1(x))
-print y.data.shape  # (10, 64, 4, 9, 9)
+print(y.data.shape)  # (10, 64, 4, 9, 9)
 ```
 
 ### Pytorch
 
 ```python
-import torch
+import torch as pt
 from torch.autograd import Variable
-from groupy.gconv.pytorch_gconv import P4ConvZ2, P4ConvP4
+from groupy.gconv.pytorch_gconv import GConv2d
 
 # Construct G-Conv layers
-C1 = P4ConvZ2(in_channels=3, out_channels=64, kernel_size=3, stride=1, padding=1)
-C2 = P4ConvP4(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1)
+C1 = GConv2d(g_input='Z2', g_output='C4', in_channels=3, out_channels=64, kernel_size=3, stride=1, padding=1)
+C2 = GConv2d(g_input='C4', g_output='C4', in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1)
 
 # Create 10 images with 3 channels and 9x9 pixels:
-x = Variable(torch.randn(10, 3, 9, 9))
+x = Variable(pt.randn(10, 3, 9, 9))
 
 # fprop
 y = C2(C1(x))
-print y.data.shape  # (10, 64, 4, 9, 9)
+print(y.data.shape)  # (10, 64, 4, 9, 9)
 ```
 
 
@@ -151,7 +154,7 @@ The gfunc.plot module contains code for plotting the [Cayley](https://en.wikiped
 
 ### Convolution
 
-The gconv module contains group convolution layers for use in neural networks. The TensorFlow implementation is in groupy/gconv/tensorflow_gconv, the Chainer implementation is in groupy/gconv/chainer_gconv, and the Pytorch implementation is in groupy/gconv/pyrotch_gconv.
+The gconv module contains group convolution layers for use in neural networks. The TensorFlow implementation is in groupy/gconv/tensorflow_gconv, the Chainer implementation is in groupy/gconv/chainer_gconv, and the Pytorch implementation is in groupy/gconv/pytorch_gconv.
 
 
 ## Implementation notes

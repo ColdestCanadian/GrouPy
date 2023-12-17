@@ -36,7 +36,7 @@ class Z2FuncArray(GFuncArray):
         super(Z2FuncArray, self).__init__(v=v, i2g=i2g)
 
     def g2i(self, g):
-        # TODO: check validity of indices and wrap / clamp if necessary
+        # TODO - check validity of indices and wrap / clamp if necessary
         # (or do this in a separate function, so that this function can be more easily tested?)
 
         gint = g.reparameterize('int').data.copy()

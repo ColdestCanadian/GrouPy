@@ -1,13 +1,15 @@
 import numpy as np
 import tensorflow as tf
-import torch
+import torch as pt
 
 from groupy.gconv.tensorflow_gconv.transform_filter import transform_filter_2d_nchw, transform_filter_2d_nhwc
 from groupy.gconv.make_gconv_indices import make_c4_z2_indices, make_c4_p4_indices,\
     make_d4_z2_indices, make_d4_p4m_indices, flatten_indices
 from groupy.gconv.pytorch_gconv.splitgconv2d import trans_filter as pytorch_trans_filter_
 
-# Comparing tensorflow and pytorch filter transformation
+# TODO: This is currerntly broken as trans_filter is not exporeted from splitgconv2d anymore.
+
+# Comparing tensorflow and pytorch filter transformations
 
 
 def check_c4_z2():
@@ -98,7 +100,7 @@ def tf_trans_filter2(w, inds):
 
 
 def pytorch_trans_filter(w, inds):
-    w = torch.DoubleTensor(w)
+    w = pt.DoubleTensor(w)
     rp = pytorch_trans_filter_(w, inds)
     rp = rp.numpy()
     return rp

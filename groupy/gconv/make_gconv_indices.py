@@ -12,6 +12,7 @@ from groupy.gfunc.z2func_array import Z2FuncArray
 from groupy.gfunc.p4func_array import P4FuncArray
 from groupy.gfunc.p4mfunc_array import P4MFuncArray
 
+# TODO - add make_z2_z2_indices function or behaviour to return normal convolution
 
 def make_c4_z2_indices(ksize):
     x = np.random.randn(1, ksize, ksize)
@@ -65,7 +66,7 @@ def flatten_indices(inds):
     used by tensorflow.
 
     :param inds: np.ndarray of shape (output transformations, input transformations, n, n, 3), as output by
-    the functions like make_d4_p4m_indices(n).
+        the functions like make_d4_p4m_indices(n).
     :return: np.ndarray of shape (output transformations, input transformations, n, n)
     """
     n = inds.shape[-2]

@@ -92,16 +92,23 @@ class GFuncArray(object):
     def __mul__(self, other):
         # Compute self * other
         if isinstance(other, GArray):
+            # DEBUG
+            print("gfuncarray l96", flush=True)
             gp = self.right_translation_points(other)
             return self(gp)
         else:
             # Python assumes we *return* NotImplemented instead of raising NotImplementedError,
             # when we dont know how to left multiply the given type of object by self.
+
+            # DEBUG
+            print("gfuncarray l104", flush=True)
             return NotImplemented
 
     def __rmul__(self, other):
         # Compute other * self
         if isinstance(other, GArray):
+            # DEBUG
+            print("gfuncarray l111", flush=True)
             gp = self.left_translation_points(other)
             return self(gp)
         else:

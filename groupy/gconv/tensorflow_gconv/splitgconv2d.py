@@ -9,7 +9,7 @@ from groupy.gconv.tensorflow_gconv.transform_filter import transform_filter_2d_n
 def gconv2d(input, filter, strides, padding, gconv_indices, gconv_shape_info,
             use_cudnn_on_gpu=None, data_format='NHWC', name=None):
     """
-    Tensorflow implementation of the group convolution.
+    Tensorflow implementation of 2D group equivariant convolution.
     This function has the same interface as the standard convolution nn.conv2d, except for two new parameters,
     gconv_indices and gconv_shape_info. These can be obtained from gconv2d_util(), and are described below
 
@@ -17,13 +17,12 @@ def gconv2d(input, filter, strides, padding, gconv_indices, gconv_shape_info,
     :param filter: a tensor with (ksize, ksize, in channels * in transformations, out channels) axes.
       The shape for filter can be obtained from gconv2d_util().
     :param strides: A list of ints. 1-D of length 4. The stride of the sliding window for each dimension of input.
-     Must be in the same order as the dimension specified with format.
+        Must be in the same order as the dimension specified with format.
     :param padding: A string from: "SAME", "VALID". The type of padding algorithm to use.
     :param gconv_indices: indices used in the filter transformation step of the G-Conv.
-      Can be obtained from gconv2d_util() or using a command like flatten_indices(make_d4_p4m_indices(ksize=3)).
-    :param gconv_shape_info: a tuple containing
-     (num output channels, num output transformations, num input channels, num input transformations, kernel size)
-     Can be obtained from gconv2d_util()
+        Can be obtained from gconv2d_util() or using a command like flatten_indices(make_d4_p4m_indices(ksize=3)).
+    :param gconv_shape_info: a tuple containing (num output channels, num output transformations, num input 
+        channels, num input transformations, kernel size). Can be obtained from gconv2d_util()
     :param use_cudnn_on_gpu: an optional bool. Defaults to True.
     :param data_format: the order of axes. Currently only NCHW is supported
     :param name: a name for the operation (optional)
@@ -37,7 +36,7 @@ def gconv2d(input, filter, strides, padding, gconv_indices, gconv_shape_info,
     transformed_filter = transform_filter_2d_nhwc(w=filter, flat_indices=gconv_indices, shape_info=gconv_shape_info)
 
     # Convolve input with transformed filters
-    conv = tf.nn.conv2d(input=input, filter=transformed_filter, strides=strides, padding=padding,
+    conv = tf.compat.v1.nn.conv2d(input=input, filter=transformed_filter, strides=strides, padding=padding,
                         use_cudnn_on_gpu=use_cudnn_on_gpu, data_format=data_format, name=name)
 
     return conv
@@ -53,11 +52,11 @@ def gconv2d_util(h_input, h_output, in_channels, out_channels, ksize):
 
     :param h_input: one of ('Z2', 'C4', 'D4'). Use 'Z2' for the first layer. Use 'C4' or 'D4' for later layers.
     :param h_output: one of ('C4', 'D4'). What kind of transformations to use (rotations or roto-reflections).
-      The choice of h_output of one layer should equal h_input of the next layer.
+        The choice of h_output of one layer should equal h_input of the next layer.
     :param in_channels: the number of input channels. Note: this refers to the number of (3D) channels on the group.
-    The number of 2D channels will be 1, 4, or 8 times larger, depending the value of h_input.
+        The number of 2D channels will be 1, 4, or 8 times larger, depending the value of h_input.
     :param out_channels: the number of output channels. Note: this refers to the number of (3D) channels on the group.
-    The number of 2D channels will be 1, 4, or 8 times larger, depending on the value of h_output.
+        The number of 2D channels will be 1, 4, or 8 times larger, depending on the value of h_output.
     :param ksize: the spatial size of the filter kernels (typically 3, 5, or 7).
     :return: gconv_indices
     """

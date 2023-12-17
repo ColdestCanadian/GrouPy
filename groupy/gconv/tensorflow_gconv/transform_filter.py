@@ -5,16 +5,20 @@ import tensorflow as tf
 def transform_filter_2d_nhwc(w, flat_indices, shape_info, validate_indices=True):
     """
     Transform a set of filters defined on a split plane group G.
-    This is the first step of the G-Conv. The user will typically not have to call this function directly.
+    This is the first step of the G-Conv. The user will typically not have to call this
+    function directly.
 
     The input filter bank w has shape (n, n, nti * ni, no), where:
-    n: the filter width and height
-    ni: the number of input channels (note: the input feature map is assumed to have ni * nti number of channels)
-    nti: the number of transformations in H (the stabilizer of the origin in the input space)
-    For example, nti == 1 for images / functions on Z2, since only the identity translation leaves the origin invariant.
-    Similarly, nti == 4 for the group p4, because there are 4 transformations in p4 (namely, the four rotations around
-    the origin) that leave the origin in p4 (i.e. the identity transformation) fixed.
-    no: the number of output channels (note: the G-Conv will actually create no * nto number of channels, see below.
+    :n: the filter width and height
+    :ni: the number of input channels (note: the input feature map is assumed to have 
+        ni * nti number of channels)
+    :nti: the number of transformations in H (the origin stabilizer in the input space)
+        For example, nti == 1 for images / functions on Z2, since only the identity 
+        translation leaves the origin invariant. Similarly, nti == 4 for the group p4,
+        because there are 4 transformations in p4 (namely, the four rotations around
+        the origin) that leave the origin in p4 (i.e. the identity transformation) fixed.
+    :no: the number of output channels (note: the G-Conv will actually create no * nto number
+        of channels, see below.
 
     The index array has shape (nto, nti, n, n)
     Index arrays for various groups can be created with functions in groupy.gconv.make_gconv_indices.
@@ -43,16 +47,20 @@ def transform_filter_2d_nhwc(w, flat_indices, shape_info, validate_indices=True)
 def transform_filter_2d_nchw(w, flat_indices, shape_info, validate_indices=True):
     """
     Transform a set of filters defined on a split plane group G.
-    This is the first step of the G-Conv. The user will typically not have to call this function directly.
+    This is the first step of the G-Conv. The user will typically not have to call this
+    function directly.
 
     The input filter bank w has shape (no, ni * nti, n, n), where:
-    no: the number of output channels (note: the G-Conv will actually create no * nto number of channels, see below.
-    ni: the number of input channels (note: the input feature map is assumed to have ni * nti number of channels)
-    nti: the number of transformations in H (the stabilizer of the origin in the input space)
-    For example, nti == 1 for images / functions on Z2, since only the identity translation leaves the origin invariant.
-    Similarly, nti == 4 for the group p4, because there are 4 transformations in p4 (namely, the four rotations around
-    the origin) that leave the origin in p4 (i.e. the identity transformation) fixed.
-    n: the filter width and height
+    :no: the number of output channels (note: the G-Conv will actually create
+        no * nto number of channels, see below.
+    :ni: the number of input channels (note: the input feature map is assumed to
+        have ni * nti number of channels)
+    :nti: the number of transformations in H (the stabilizer of the origin in the
+        input space). For example, nti == 1 for images / functions on Z2, since only
+        the identity translation leaves the origin invariant. Similarly, nti == 4 for
+        the group p4, because there are 4 transformations in p4 (namely, the four rotations
+        around the origin) that leave the origin in p4 (i.e. identity transformation) fixed.
+    :n: the filter width and height
 
     The index array has shape (nto, nti, n, n)
     Index arrays for various groups can be created with functions in groupy.gconv.make_gconv_indices.
