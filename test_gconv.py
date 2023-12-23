@@ -4,7 +4,7 @@ import numpy as np
 ### ---[ Test pytorch implementation ]-----------
 import torch as pt
 from torch.autograd import Variable
-from groupy.gconv.pytorch_gconv.splitgconv2d import GConv2d
+from groupy.gconv.pytorch_gconv.splitgconv2d import gconv2d
 from groupy.gfunc import Z2FuncArray, P4FuncArray
 import groupy.garray.C4_array as c4a
 from PIL import Image
@@ -14,7 +14,7 @@ def test_p4_net_equivariance():
     check_equivariance(
         im=im,
         layers=[
-            GConv2d(g_input='Z2', g_output='C4', in_channels=1, out_channels=1, kernel_size=3, padding=1)
+            gconv2d(g_input='Z2', g_output='C4', in_channels=1, out_channels=1, kernel_size=3, padding=1)
         ],
         input_array=Z2FuncArray,
         output_array=P4FuncArray,
@@ -52,7 +52,7 @@ def test_p4_net_pooling_equivariance():
     im = pt.randn(1,1,5,5)
     imT = pt.rot90(im, dims=[2,3])
     layers=[
-            GConv2d(g_input='Z2', g_output='C4', in_channels=1, out_channels=1, kernel_size=3, padding=1)
+            gconv2d(g_input='Z2', g_output='C4', in_channels=1, out_channels=1, kernel_size=3, padding=1)
         ]
     
     print("Image : "+str(im))
@@ -147,6 +147,6 @@ if __name__=="__main__":
     # im = np.asarray(Image.open(image_dir))
     # test_p4_net_equivariance()
     # test_p4_net_pooling_equivariance()
-    check_c4_z2_conv_equivariance()
+    test_p4_net_pooling_equivariance()
 
 

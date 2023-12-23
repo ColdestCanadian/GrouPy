@@ -110,7 +110,7 @@ class SplitGConv2d(nn.Module):
                                    inds.shape[1], 
                                    inds.shape[2], 
                                    inds.shape[3])
-        w_transformed = w_indexed.permute(0, 2, 1, 3, 4, 5) # Previously: w_transformed = w_indexed.permute(0, 1, 3, 2, 4, 5)
+        w_transformed = w_indexed.permute(0, 1, 3, 2, 4, 5) # Previously: w_transformed = w_indexed.permute(0, 1, 3, 2, 4, 5)
         return w_transformed.contiguous()
     
     def transform_filter_2d_nchw(self, y, shape):
@@ -149,9 +149,9 @@ def gconv2d(g_input, g_output, *args, **kwargs):
     Wrapper function for SplitConv2D class. Provides group equivariant 2D convolution action on g_input and 
     returning g_output group.
 
-    :parm g_input: One of ('Z2', 'C4', 'D4'). Use 'Z2' for the first layer. Use 'C4' or 'D4' for later layers.
+    :parm g_input: One of {'Z2', 'C4', 'D4'}. Use 'Z2' for the first layer. Use 'C4' or 'D4' for later layers.
         The parameter value 'Z2' specifies the data being convolved is from the Z^2 plane (discrete mesh).
-    :parm g_output: One of ('C4', 'D4'). What kind of transformations to use (rotations or roto-reflections).
+    :parm g_output: One of {'C4', 'D4'}. What kind of transformations to use (rotations or roto-reflections).
         The value of g_input of the subsequent layer should match the value of g_output from the previous.
     :parm in_channels: The number of input channels. Based on the input group action the number of channels 
         used is equal to nti*in_channels.
