@@ -133,57 +133,57 @@
 # import groupy.garray.D4_array as D4a
 
 # def check_c4_z2_conv_equivariance():
-#     out_channels=1
-#     in_channels=1
-#     nti=1
-#     ksize=3
+    # out_channels=1
+    # in_channels=1
+    # nti=1
+    # ksize=3
 
-#     print("kernel size:\n "+str(ksize))
+    # print("kernel size:\n "+str(ksize))
 
-#     im = np.random.randn(in_channels, ksize, ksize, out_channels)
-#     imT = np.rot90(im, axes=(1,2))
+    # im = np.random.randn(in_channels, ksize, ksize, out_channels)
+    # imT = np.rot90(im, axes=(1,2))
     
-#     print("Image: "+str(im))
-#     print("Image.T: "+str(imT))
+    # print("Image: "+str(im))
+    # print("Image.T: "+str(imT))
 
-#     x, y = make_graph('Z2', 'C4', ksize)
+    # x, y = make_graph('Z2', 'C4', ksize)
 
-#     print("x: "+str(x))
-#     print("y: "+str(y))
+    # print("x: "+str(x))
+    # print("y: "+str(y))
 
-#     inds = make_c4_z2_indices(ksize=3)
-#     print("make c4_z2 indices:\n "+str(inds))
+    # inds = make_c4_z2_indices(ksize=3)
+    # print("make c4_z2 indices:\n "+str(inds))
 
-#     inds_util, inds_shape_util, w_shape = gconv2d_util(h_input='Z2', h_output='C4', in_channels=in_channels, out_channels=out_channels, ksize=ksize)
-#     print("inds_util:\n "+str(inds_util))
-#     print("inds_shape_util:\n "+str(inds_shape_util))
-#     print("w_shape:\n "+str(w_shape))
+    # inds_util, inds_shape_util, w_shape = gconv2d_util(h_input='Z2', h_output='C4', in_channels=in_channels, out_channels=out_channels, ksize=ksize)
+    # print("inds_util:\n "+str(inds_util))
+    # print("inds_shape_util:\n "+str(inds_shape_util))
+    # print("w_shape:\n "+str(w_shape))
 
-#     w = tf.Variable(tf.compat.v1.truncated_normal(w_shape, stddev=1.))
+    # w = tf.Variable(tf.compat.v1.truncated_normal(w_shape, stddev=1.))
     
-#     # Compute
-#     input = tf.compat.v1.placeholder(dtype=tf.float32, shape=[out_channels, ksize, ksize, in_channels * nti])
-#     output = gconv2d(input=input, filter=w, strides=[1, 1, 1, 1], padding='SAME',
-#                 gconv_indices=inds_util, gconv_shape_info=inds_shape_util)
-#     init = tf.compat.v1.global_variables_initializer()
-#     sess = tf.compat.v1.Session()
-#     sess.run(init)
-#     y = sess.run(output, feed_dict={input: im})
-#     yT = sess.run(output, feed_dict={input: imT})
-#     sess.close()
+    # # Compute
+    # input = tf.compat.v1.placeholder(dtype=tf.float32, shape=[out_channels, ksize, ksize, in_channels * nti])
+    # output = gconv2d(input=input, filter=w, strides=[1, 1, 1, 1], padding='SAME',
+    #             gconv_indices=inds_util, gconv_shape_info=inds_shape_util)
+    # init = tf.compat.v1.global_variables_initializer()
+    # sess = tf.compat.v1.Session()
+    # sess.run(init)
+    # y = sess.run(output, feed_dict={input: im})
+    # yT = sess.run(output, feed_dict={input: imT})
+    # sess.close()
 
-#     print("y:\n "+str(y))
-#     print("yT:\n "+str(yT))
+    # print("y:\n "+str(y))
+    # print("yT:\n "+str(yT))
 
-#     difference = np.abs(y-yT)
-#     difference_rot = np.abs(np.rot90(y, axes=(1,2))-yT)
-#     print("Difference:\n "+str(difference))
-#     print("difference rot:\n"+str(difference_rot))
+    # difference = np.abs(y-yT)
+    # difference_rot = np.abs(np.rot90(y, axes=(1,2))-yT)
+    # print("Difference:\n "+str(difference))
+    # print("difference rot:\n"+str(difference_rot))
 
-#     y_pooled = KL.AveragePooling2D(y)
+    # y_pooled = KL.AveragePooling2D(y)
 
 
-#     check_equivariance(im, x, y, Z2FuncArray, P4FuncArray, C4a)
+    # check_equivariance(im, x, y, Z2FuncArray, P4FuncArray, C4a)
 
 
 # def make_graph(h_input, h_output, ksize):
@@ -222,7 +222,9 @@
 
 
 ## ---[ Test Keras implementation ]-------
+
 import tensorflow as tf
+tf.compat.v1.disable_eager_execution()
 import numpy as np
 import tensorflow.keras
 import tensorflow.python.keras.engine
@@ -238,8 +240,24 @@ from groupy.gfunc.z2func_array import Z2FuncArray
 
 
 def test_c4_z2_conv_equivariance():
-    im = np.random.randn(2, 5, 5, 1)
+    out_channels=1
+    in_channels=1
+    nti=1
+    ksize=5
+
+    print("kernel size:\n "+str(ksize))
+
+    im = np.random.randn(in_channels, ksize, ksize, out_channels)
+    imT = tf.image.rot90(im, k=1)
+    
+    print("Image: "+str(im))
+    print("Image.T: "+str(imT))
+
     x, y = make_graph('Z2', 'C4')
+
+    print("x: "+str(x))
+    print("y: "+str(y))
+
     equivariance_check(im, x, y, Z2FuncArray, P4FuncArray, C4a)
 
 def make_graph(h_input, h_output):
@@ -251,7 +269,7 @@ def make_graph(h_input, h_output):
         input_dim *= 8
     l.build([None, None, input_dim])
     nti = l.gconv_shape_info[-2]
-    x = tf.placeholder(tf.float32, [None, 5, 5, 1 * nti])
+    x = tf.compat.v1.placeholder(tf.float32, [None, 5, 5, 1 * nti])
     y = l(x)
     return x, y
 
@@ -265,32 +283,43 @@ def make_graph_transposed(in_shape, h_input, h_output):
         input_dim *= 8
     l.build([None, None, input_dim])
     nti = l.gconv_shape_info[-2]
-    x = tf.placeholder(tf.float32, [None, 5, 5, 1 * nti])
+    x = tf.compat.v1.placeholder(tf.float32, [None, 5, 5, 1 * nti])
     y = l(x)
     return x, y
 
 
 def equivariance_check(im, input, output, input_array, output_array, point_group):
     # Transform the image
+    im = im
+    print("Image:\n"+str(im))
+    imT = im.T
+    im_rot = np.rot90(im, k=1)
+    print("Image rot:\n"+str(im_rot))
+
+    # Compute
+    init = tf.compat.v1.global_variables_initializer()
+    sess = tf.compat.v1.Session()
+    sess.run(init)
+    y = sess.run(output, feed_dict={input: im})
+    y_rot = sess.run(output, feed_dict={input: im_rot})
+    yT = sess.run(output, feed_dict={input: imT})
+    sess.close()
+
+    differenceT = np.abs(y.T-yT)
+    difference_rot = np.abs(tf.image.rot90(y, k=1)-y_rot)
+    print("DifferenceT:\n "+str(differenceT))
+    print("difference rot:\n"+str(difference_rot))
+
     f = input_array(im.transpose((0, 3, 1, 2)))
     g = point_group.rand()
     gf = g * f
     im1 = gf.v.transpose((0, 2, 3, 1))
-
-    # Compute
-    init = tf.global_variables_initializer()
-    sess = tf.Session()
-    sess.run(init)
-    yx = sess.run(output, feed_dict={input: im})
-    yrx = sess.run(output, feed_dict={input: im1})
-    sess.close()
-
     # Transform the computed feature maps
-    fmap1_garray = output_array(yrx.transpose((0, 3, 1, 2)))
+    fmap1_garray = output_array(yT.transpose((0, 3, 1, 2)))
     r_fmap1_data = (g.inv() * fmap1_garray).v.transpose((0, 2, 3, 1))
 
-    print(np.abs(yx - r_fmap1_data).sum())
-    assert np.allclose(yx, r_fmap1_data, rtol=1e-5, atol=1e-3)
+    print(np.abs(y - r_fmap1_data).sum())
+    assert np.allclose(y, r_fmap1_data, rtol=1e-5, atol=1e-3)
 
 
 ### ---[ Main ]----------------------------------
